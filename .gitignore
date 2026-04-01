@@ -1,6 +1,9 @@
 # Claude Code (local)
 .claude/
 
+# Git worktrees
+.worktrees/
+
 # Dependencies
 node_modules/
 
