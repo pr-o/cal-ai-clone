@@ -1,8 +1,5 @@
 import { calculateStreak } from './streaks';
 
-// Fix "today" so tests are deterministic
-const MOCK_TODAY = '2026-04-02';
-
 jest.mock('./streaks', () => {
   const actual = jest.requireActual('./streaks');
   return {

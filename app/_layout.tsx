@@ -45,7 +45,6 @@ export default function RootLayout() {
 
   const hydrateProfile = useProfileStore((s) => s.hydrate);
   const hydrateDaily = useDailyStore((s) => s.hydrateForDate);
-  const setCaloriesRemaining = useDailyStore((s) => s.setCaloriesRemaining);
 
   // Apply theme from settings to NativeWind
   useEffect(() => {
@@ -60,7 +59,7 @@ export default function RootLayout() {
         hydrateDaily(todayString(), goalCals);
       });
     }
-  }, [migrationsSuccess]);
+  }, [migrationsSuccess, hydrateProfile, hydrateDaily]);
 
   useEffect(() => {
     if (fontsLoaded && (migrationsSuccess || migrationsError)) {

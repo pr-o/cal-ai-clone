@@ -106,7 +106,14 @@ export default function PlanScreen() {
       });
       setTargets(result);
     }
-  }, []);
+  }, [
+    onboarding.goal,
+    onboarding.gender,
+    onboarding.birthday,
+    onboarding.currentWeightKg,
+    onboarding.heightCm,
+    onboarding.activityLevel,
+  ]);
 
   function handleEditStart(key: MacroKey) {
     if (!targets) return;

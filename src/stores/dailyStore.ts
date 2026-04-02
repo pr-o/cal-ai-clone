@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { db } from '@/db/index';
 import {
   dailyLogs,
