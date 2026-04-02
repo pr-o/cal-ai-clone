@@ -1,11 +1,11 @@
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text } from 'react-native';
 
 interface WeekStripProps {
   selectedDate: string; // YYYY-MM-DD
   onDaySelect: (date: string) => void;
 }
 
-function getWeekDates(): Array<{ date: string; day: string; num: number }> {
+function getWeekDates(): { date: string; day: string; num: number }[] {
   const today = new Date();
   const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   const result = [];

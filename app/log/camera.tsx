@@ -18,7 +18,7 @@ export default function CameraScreen() {
     if (!hasPermission) {
       requestPermission();
     }
-  }, [hasPermission]);
+  }, [hasPermission, requestPermission]);
 
   async function handleCapture() {
     if (!cameraRef.current || capturing) return;

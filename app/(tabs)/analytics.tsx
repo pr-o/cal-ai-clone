@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { gte, desc, eq } from 'drizzle-orm';
+import { gte } from 'drizzle-orm';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
 import { type stackDataItem, type lineDataItem } from 'gifted-charts-core';
 import { db } from '@/db/index';
@@ -98,10 +98,6 @@ export default function AnalyticsScreen() {
         .select()
         .from(dailyLogs)
         .where(gte(dailyLogs.date, sevenDaysAgo));
-
-      const logIdToDate = Object.fromEntries(
-        recentLogs.map((l) => [l.id, l.date])
-      );
 
       const recentFoods = await db
         .select()

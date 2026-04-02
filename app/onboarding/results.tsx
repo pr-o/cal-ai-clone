@@ -41,7 +41,7 @@ export default function ResultsScreen() {
       Animated.timing(opacity, { toValue: 1, duration: 600, useNativeDriver: true }),
       Animated.timing(slideY, { toValue: 0, duration: 600, useNativeDriver: true }),
     ]).start();
-  }, []);
+  }, [opacity, slideY]);
 
   return (
     <OnboardingLayout step={9} total={10}>

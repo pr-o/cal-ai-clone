@@ -5,7 +5,6 @@ import {
   Pressable,
   Text,
   View,
-  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -38,7 +37,6 @@ export default function HomeScreen() {
   const deleteEntry = useDailyStore((s) => s.deleteEntry);
   const entries = useDailyStore((s) => s.entries);
   const caloriesConsumed = useDailyStore((s) => s.caloriesConsumed);
-  const caloriesRemaining = useDailyStore((s) => s.caloriesRemaining);
   const macrosConsumed = useDailyStore((s) => s.macrosConsumed);
 
   const dailyCalories = useProfileStore((s) => s.dailyCalories);
@@ -50,7 +48,7 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       hydrateForDate(selectedDate, dailyCalories);
-    }, [selectedDate, dailyCalories])
+    }, [selectedDate, dailyCalories, hydrateForDate])
   );
 
   function handleDaySelect(date: string) {

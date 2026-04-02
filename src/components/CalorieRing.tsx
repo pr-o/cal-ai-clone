@@ -23,7 +23,7 @@ export function CalorieRing({ consumed, goal, size = 180 }: CalorieRingProps) {
 
   useEffect(() => {
     progress.value = withTiming(targetProgress, { duration: 800 });
-  }, [targetProgress]);
+  }, [targetProgress, progress]);
 
   const animatedProps = useAnimatedProps(() => ({
     strokeDashoffset: circumference * (1 - progress.value),
