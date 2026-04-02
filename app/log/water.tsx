@@ -9,6 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useDailyStore } from '@/stores/dailyStore';
+import { ScreenHeader } from '@/components/ScreenHeader';
 
 const WATER_GOAL_ML = 2500;
 const QUICK_OPTIONS = [250, 500, 750, 1000];
@@ -41,15 +42,7 @@ export default function WaterScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-dark-primary" edges={['top']}>
-      {/* Header */}
-      <View className="flex-row items-center px-4 py-3 border-b border-border dark:border-dark-border">
-        <Pressable onPress={() => router.back()} hitSlop={8} className="mr-3">
-          <Text className="text-text-primary dark:text-text-dark-primary text-lg">←</Text>
-        </Pressable>
-        <Text className="text-base font-bold text-text-primary dark:text-text-dark-primary flex-1">
-          Log Water
-        </Text>
-      </View>
+      <ScreenHeader title="Log Water" />
 
       <View className="flex-1 px-5 pt-6">
         {/* Today's progress */}

@@ -18,16 +18,9 @@ import { db } from '@/db/index';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useProfileStore } from '@/stores/profileStore';
 import { useDailyStore } from '@/stores/dailyStore';
+import { getTodayString } from '@/utils/date';
 
 SplashScreen.preventAutoHideAsync();
-
-function todayString() {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
 
 export default function RootLayout() {
   const theme = useSettingsStore((s) => s.theme);
@@ -56,7 +49,7 @@ export default function RootLayout() {
     if (migrationsSuccess) {
       hydrateProfile().then(() => {
         const goalCals = useProfileStore.getState().dailyCalories;
-        hydrateDaily(todayString(), goalCals);
+        hydrateDaily(getTodayString(), goalCals);
       });
     }
   }, [migrationsSuccess, hydrateProfile, hydrateDaily]);

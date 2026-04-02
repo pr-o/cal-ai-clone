@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  Modal,
   Pressable,
   Text,
   TextInput,
@@ -17,6 +16,7 @@ import {
   NutritionixError,
 } from '@/services/nutritionix';
 import { useDailyStore } from '@/stores/dailyStore';
+import { BottomSheetModal } from '@/components/BottomSheetModal';
 
 export default function SearchScreen() {
   const [query, setQuery] = useState('');
@@ -193,18 +193,9 @@ export default function SearchScreen() {
       )}
 
       {/* Confirm modal */}
-      <Modal
-        visible={!!selected}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setSelected(null)}
-      >
+      <BottomSheetModal visible={!!selected} onClose={() => setSelected(null)}>
         {selected && (
-          <Pressable
-            className="flex-1 bg-black/40"
-            onPress={() => setSelected(null)}
-          >
-            <View className="absolute bottom-0 left-0 right-0 bg-white dark:bg-dark-secondary rounded-t-3xl pb-10 pt-5 px-5">
+          <>
               <Text className="text-lg font-bold text-text-primary dark:text-text-dark-primary mb-1 capitalize">
                 {selected.name}
               </Text>
@@ -260,10 +251,9 @@ export default function SearchScreen() {
                   </Text>
                 )}
               </Pressable>
-            </View>
-          </Pressable>
+          </>
         )}
-      </Modal>
+      </BottomSheetModal>
     </SafeAreaView>
   );
 }

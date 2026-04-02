@@ -5,12 +5,12 @@ import {
   ScrollView,
   Text,
   TextInput,
-  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { estimateCaloriesBurned, EXERCISE_SUGGESTIONS } from '@/utils/exercise';
 import { useDailyStore } from '@/stores/dailyStore';
+import { ScreenHeader } from '@/components/ScreenHeader';
 
 export default function ExerciseScreen() {
   const [exerciseName, setExerciseName] = useState('');
@@ -56,15 +56,7 @@ export default function ExerciseScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-dark-primary" edges={['top']}>
-      {/* Header */}
-      <View className="flex-row items-center px-4 py-3 border-b border-border dark:border-dark-border">
-        <Pressable onPress={() => router.back()} hitSlop={8} className="mr-3">
-          <Text className="text-text-primary dark:text-text-dark-primary text-lg">←</Text>
-        </Pressable>
-        <Text className="text-base font-bold text-text-primary dark:text-text-dark-primary flex-1">
-          Log Exercise
-        </Text>
-      </View>
+      <ScreenHeader title="Log Exercise" />
 
       <ScrollView
         className="flex-1"
