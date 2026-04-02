@@ -12,19 +12,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import {
   searchFoods,
-  NutritionixFood,
-  NutritionixError,
+  FoodResult,
+  FoodSearchError,
 } from '@/services/nutritionix';
 import { useDailyStore } from '@/stores/dailyStore';
 import { BottomSheetModal } from '@/components/BottomSheetModal';
 
 export default function SearchScreen() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<NutritionixFood[]>([]);
+  const [results, setResults] = useState<FoodResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [noKeyError, setNoKeyError] = useState(false);
-  const [selected, setSelected] = useState<NutritionixFood | null>(null);
+  const [selected, setSelected] = useState<FoodResult | null>(null);
   const [saving, setSaving] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -54,7 +54,7 @@ export default function SearchScreen() {
       setResults(foods);
     } catch (e) {
       if (
-        e instanceof NutritionixError &&
+        e instanceof FoodSearchError &&
         e.code === 'NO_API_KEY'
       ) {
         setNoKeyError(true);
@@ -67,7 +67,7 @@ export default function SearchScreen() {
     }
   }
 
-  async function handleAdd(food: NutritionixFood) {
+  async function handleAdd(food: FoodResult) {
     setSaving(true);
     try {
       await addFoodEntry({
@@ -119,7 +119,7 @@ export default function SearchScreen() {
             API keys required
           </Text>
           <Text className="text-sm text-text-secondary dark:text-text-dark-secondary text-center mb-5">
-            Add your Nutritionix App ID and API key in Settings to use food search.
+            Add your USDA FoodData Central API key in Settings to use food search.
           </Text>
           <Pressable
             onPress={() => {
@@ -139,7 +139,7 @@ export default function SearchScreen() {
         <View className="flex-1 items-center justify-center px-8">
           <Text className="text-4xl mb-3">🔍</Text>
           <Text className="text-sm text-text-secondary dark:text-text-dark-secondary text-center">
-            Type a food name to search the Nutritionix database
+            Type a food name to search the USDA FoodData Central database
           </Text>
         </View>
       ) : loading ? (
