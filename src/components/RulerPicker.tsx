@@ -68,7 +68,7 @@ export function RulerPicker({ value, min, max, step = 1, unit = '', onChange }: 
                 style={{ width: TICK_WIDTH, marginRight: TICK_GAP }}
               >
                 <View
-                  className="bg-gray-400 dark:bg-gray-500 w-px"
+                  className="bg-gray-400 dark:bg-gray-400 w-px"
                   style={{ height: isMajor ? 28 : 16 }}
                 />
               </View>

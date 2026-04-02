@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
+import { useColorScheme } from 'nativewind';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -12,6 +13,8 @@ interface CalorieRingProps {
 }
 
 export function CalorieRing({ consumed, goal, size = 180 }: CalorieRingProps) {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const radius = (size - 20) / 2;
   const circumference = 2 * Math.PI * radius;
   const progress = useSharedValue(0);
@@ -34,7 +37,7 @@ export function CalorieRing({ consumed, goal, size = 180 }: CalorieRingProps) {
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#E5E5E5"
+          stroke={isDark ? '#404040' : '#E5E5E5'}
           strokeWidth={12}
           fill="none"
         />
@@ -43,7 +46,7 @@ export function CalorieRing({ consumed, goal, size = 180 }: CalorieRingProps) {
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke={consumed > goal ? '#FF6B35' : '#000000'}
+          stroke={consumed > goal ? '#FF6B35' : isDark ? '#FFFFFF' : '#000000'}
           strokeWidth={12}
           fill="none"
           strokeDasharray={circumference}
