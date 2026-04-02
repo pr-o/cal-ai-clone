@@ -5,6 +5,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Switch,
   Text,
   TextInput,
   View,
@@ -17,6 +18,11 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { useProfileStore } from '@/stores/profileStore';
 import { db } from '@/db/index';
 import { profiles } from '@/db/schema';
+import {
+  requestPermissions,
+  scheduleMealReminder,
+  cancelMealReminder,
+} from '@/utils/notifications';
 
 // ─── Section wrapper ─────────────────────────────────────────────────────────
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -161,6 +167,13 @@ export default function SettingsScreen() {
   const setNutritionixAppId = useSettingsStore((s) => s.setNutritionixAppId);
   const setNutritionixApiKey = useSettingsStore((s) => s.setNutritionixApiKey);
 
+  const reminderBreakfast = useSettingsStore((s) => s.reminderBreakfast);
+  const reminderLunch = useSettingsStore((s) => s.reminderLunch);
+  const reminderDinner = useSettingsStore((s) => s.reminderDinner);
+  const setReminderBreakfast = useSettingsStore((s) => s.setReminderBreakfast);
+  const setReminderLunch = useSettingsStore((s) => s.setReminderLunch);
+  const setReminderDinner = useSettingsStore((s) => s.setReminderDinner);
+
   const profile = useProfileStore((s) => s.profile);
   const dailyCalories = useProfileStore((s) => s.dailyCalories);
   const dailyProteinG = useProfileStore((s) => s.dailyProteinG);
@@ -187,6 +200,29 @@ export default function SettingsScreen() {
   function handleThemeChange(t: typeof theme) {
     setTheme(t);
     nwColorScheme.set(t);
+  }
+
+  async function handleReminderToggle(
+    meal: 'breakfast' | 'lunch' | 'dinner',
+    enabled: boolean,
+    hour: number,
+    minute: number,
+    setter: (v: boolean) => void
+  ) {
+    if (enabled) {
+      const granted = await requestPermissions();
+      if (!granted) {
+        Alert.alert(
+          'Notifications Disabled',
+          'Enable notifications in your device settings to receive meal reminders.'
+        );
+        return;
+      }
+      await scheduleMealReminder(hour, minute, meal);
+    } else {
+      await cancelMealReminder(meal);
+    }
+    setter(enabled);
   }
 
   async function testGemini() {
@@ -402,6 +438,62 @@ export default function SettingsScreen() {
             </Row>
           </Section>
         )}
+
+        {/* ── Reminders ─────────────────────────────── */}
+        <Section title="Meal Reminders">
+          {(
+            [
+              {
+                label: 'Breakfast',
+                time: '8:00 AM',
+                value: reminderBreakfast,
+                setter: setReminderBreakfast,
+                hour: 8,
+                minute: 0,
+                meal: 'breakfast' as const,
+              },
+              {
+                label: 'Lunch',
+                time: '12:00 PM',
+                value: reminderLunch,
+                setter: setReminderLunch,
+                hour: 12,
+                minute: 0,
+                meal: 'lunch' as const,
+              },
+              {
+                label: 'Dinner',
+                time: '7:00 PM',
+                value: reminderDinner,
+                setter: setReminderDinner,
+                hour: 19,
+                minute: 0,
+                meal: 'dinner' as const,
+              },
+            ] as const
+          ).map(({ label, time, value, setter, hour, minute, meal }, idx, arr) => (
+            <Row key={meal} last={idx === arr.length - 1}>
+              <View className="flex-row items-center justify-between">
+                <View>
+                  <Text className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
+                    {label}
+                  </Text>
+                  <Text className="text-xs text-text-secondary dark:text-text-dark-secondary mt-0.5">
+                    {time}
+                  </Text>
+                </View>
+                <Switch
+                  value={value}
+                  onValueChange={(enabled) =>
+                    handleReminderToggle(meal, enabled, hour, minute, setter)
+                  }
+                  trackColor={{ false: '#D1D5DB', true: '#000000' }}
+                  thumbColor="#FFFFFF"
+                />
+              </View>
+            </Row>
+          ))}
+        </Section>
 
         {/* ── Danger zone ───────────────────────────── */}
         <Section title="Danger Zone">
