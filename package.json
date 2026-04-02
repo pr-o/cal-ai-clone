@@ -17,6 +17,7 @@
     "expo": "~54.0.33",
     "expo-file-system": "~18.0.10",
     "expo-font": "~13.0.4",
+    "expo-linking": "^55.0.9",
     "expo-notifications": "~0.29.13",
     "expo-router": "~4.0.19",
     "expo-sqlite": "~15.1.4",
@@ -32,6 +33,7 @@
     "react-native-screens": "^4.10.0",
     "react-native-svg": "^15.11.2",
     "react-native-vision-camera": "^4.7.0",
+    "react-native-worklets-core": "^1.6.3",
     "tailwindcss": "^3.4.17",
     "zustand": "^5.0.5"
   },
