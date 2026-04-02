@@ -101,7 +101,7 @@ export default function ResultsScreen() {
       {/* Stats */}
       <Animated.View
         style={{ opacity, transform: [{ translateY: slideY }] }}
-        className="bg-accent-orange/10 rounded-2xl p-4 mb-6"
+        className="bg-accent-orange/10 dark:bg-accent-orange/5 rounded-2xl p-4 mb-6"
       >
         <Text className="text-3xl font-black text-accent-orange">80%</Text>
         <Text className="text-sm text-text-primary dark:text-text-dark-primary font-medium mt-1">
