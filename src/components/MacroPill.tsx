@@ -1,6 +1,5 @@
 import { Text, View } from 'react-native';
-
-type MacroType = 'protein' | 'carbs' | 'fat';
+import { type MacroType, MACRO_CONFIG } from '@/constants/macros';
 
 interface MacroPillProps {
   type: MacroType;
@@ -8,13 +7,7 @@ interface MacroPillProps {
   goal: number;
 }
 
-const MACRO_CONFIG: Record<MacroType, { label: string; icon: string; color: string; darkColor: string }> = {
-  protein: { label: 'Protein left', icon: '🥩', color: '#FF6B35', darkColor: '#FF6B35' },
-  carbs: { label: 'Carbs left', icon: '🌾', color: '#FFB800', darkColor: '#FFB800' },
-  fat: { label: 'Fat left', icon: '🫙', color: '#4A9EFF', darkColor: '#4A9EFF' },
-};
-
-export function MacroPill({ type, remaining, goal }: MacroPillProps) {
+export function MacroPill({ type, remaining }: MacroPillProps) {
   const config = MACRO_CONFIG[type];
   const isOver = remaining < 0;
 

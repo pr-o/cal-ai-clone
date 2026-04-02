@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Modal,
   Pressable,
   ScrollView,
   Switch,
@@ -18,6 +17,7 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { useProfileStore } from '@/stores/profileStore';
 import { db } from '@/db/index';
 import { profiles } from '@/db/schema';
+import { BottomSheetModal } from '@/components/BottomSheetModal';
 import {
   requestPermissions,
   scheduleMealReminder,
@@ -508,17 +508,7 @@ export default function SettingsScreen() {
       </ScrollView>
 
       {/* Edit Goals Modal */}
-      <Modal
-        visible={editGoalsModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setEditGoalsModal(false)}
-      >
-        <Pressable
-          className="flex-1 bg-black/40"
-          onPress={() => setEditGoalsModal(false)}
-        >
-          <View className="absolute bottom-0 left-0 right-0 bg-white dark:bg-dark-secondary rounded-t-3xl pb-10 pt-5 px-5">
+      <BottomSheetModal visible={editGoalsModal} onClose={() => setEditGoalsModal(false)}>
             <Text className="text-base font-bold text-text-primary dark:text-text-dark-primary mb-4">
               Edit Daily Goals
             </Text>
@@ -555,9 +545,7 @@ export default function SettingsScreen() {
                 <Text className="text-white font-bold">Save Goals</Text>
               )}
             </Pressable>
-          </View>
-        </Pressable>
-      </Modal>
+      </BottomSheetModal>
     </SafeAreaView>
   );
 }

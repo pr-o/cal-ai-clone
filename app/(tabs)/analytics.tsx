@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
-  Modal,
   Pressable,
   ScrollView,
   Text,
@@ -20,6 +19,9 @@ import { useProfileStore } from '@/stores/profileStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { calculateStreak } from '@/utils/streaks';
 import { kgToLbs } from '@/utils/units';
+import { nDaysAgo, shortDate } from '@/utils/date';
+import { MACRO_COLORS } from '@/constants/macros';
+import { BottomSheetModal } from '@/components/BottomSheetModal';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const CHART_WIDTH = SCREEN_WIDTH - 48;
@@ -36,19 +38,6 @@ interface DayMacros {
   proteinG: number;
   carbsG: number;
   fatG: number;
-}
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function nDaysAgo(n: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function shortDate(iso: string): string {
-  const [, m, d] = iso.split('-');
-  return `${parseInt(m)}/${parseInt(d)}`;
 }
 
 function bmiCategory(bmi: number): { label: string; color: string } {
@@ -169,9 +158,9 @@ export default function AnalyticsScreen() {
   const stackedBarData: stackDataItem[] = macroData.map((d) => ({
     label: shortDate(d.date),
     stacks: [
-      { value: Math.round(d.proteinG), color: '#FF6B35' },
-      { value: Math.round(d.carbsG), color: '#FFB800' },
-      { value: Math.round(d.fatG), color: '#4A9EFF' },
+      { value: Math.round(d.proteinG), color: MACRO_COLORS.protein },
+      { value: Math.round(d.carbsG), color: MACRO_COLORS.carbs },
+      { value: Math.round(d.fatG), color: MACRO_COLORS.fat },
     ],
   }));
 
@@ -292,9 +281,9 @@ export default function AnalyticsScreen() {
                 {/* Legend */}
                 <View className="flex-row mt-3 gap-4 justify-center">
                   {[
-                    { color: '#FF6B35', label: 'Protein' },
-                    { color: '#FFB800', label: 'Carbs' },
-                    { color: '#4A9EFF', label: 'Fat' },
+                    { color: MACRO_COLORS.protein, label: 'Protein' },
+                    { color: MACRO_COLORS.carbs, label: 'Carbs' },
+                    { color: MACRO_COLORS.fat, label: 'Fat' },
                   ].map(({ color, label }) => (
                     <View key={label} className="flex-row items-center gap-1.5">
                       <View
@@ -357,17 +346,7 @@ export default function AnalyticsScreen() {
       )}
 
       {/* Log weight modal */}
-      <Modal
-        visible={logWeightModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setLogWeightModal(false)}
-      >
-        <Pressable
-          className="flex-1 bg-black/40"
-          onPress={() => setLogWeightModal(false)}
-        >
-          <View className="absolute bottom-0 left-0 right-0 bg-white dark:bg-dark-secondary rounded-t-3xl pb-10 pt-5 px-5">
+      <BottomSheetModal visible={logWeightModal} onClose={() => setLogWeightModal(false)}>
             <Text className="text-base font-bold text-text-primary dark:text-text-dark-primary mb-4">
               Log Today's Weight
             </Text>
@@ -400,9 +379,7 @@ export default function AnalyticsScreen() {
                 <Text className="text-white font-bold">Save</Text>
               )}
             </Pressable>
-          </View>
-        </Pressable>
-      </Modal>
+      </BottomSheetModal>
     </SafeAreaView>
   );
 }

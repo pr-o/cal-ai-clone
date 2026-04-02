@@ -16,11 +16,7 @@ import { WeekStrip } from '@/components/WeekStrip';
 import { useDailyStore } from '@/stores/dailyStore';
 import { useProfileStore } from '@/stores/profileStore';
 import { calculateStreak } from '@/utils/streaks';
-
-function todayString() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
+import { getTodayString } from '@/utils/date';
 
 const FAB_OPTIONS = [
   { label: 'Camera', emoji: '📸', route: '/log/camera' as const },
@@ -30,7 +26,7 @@ const FAB_OPTIONS = [
 ];
 
 export default function HomeScreen() {
-  const [selectedDate, setSelectedDate] = useState(todayString());
+  const [selectedDate, setSelectedDate] = useState(getTodayString());
   const [fabOpen, setFabOpen] = useState(false);
 
   const hydrateForDate = useDailyStore((s) => s.hydrateForDate);
