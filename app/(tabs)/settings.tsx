@@ -161,11 +161,9 @@ export default function SettingsScreen() {
   const setWeightUnit = useSettingsStore((s) => s.setWeightUnit);
   const setOnboardingComplete = useSettingsStore((s) => s.setOnboardingComplete);
   const getGeminiApiKey = useSettingsStore((s) => s.getGeminiApiKey);
-  const getNutritionixAppId = useSettingsStore((s) => s.getNutritionixAppId);
-  const getNutritionixApiKey = useSettingsStore((s) => s.getNutritionixApiKey);
+  const getUsdaApiKey = useSettingsStore((s) => s.getUsdaApiKey);
   const setGeminiApiKey = useSettingsStore((s) => s.setGeminiApiKey);
-  const setNutritionixAppId = useSettingsStore((s) => s.setNutritionixAppId);
-  const setNutritionixApiKey = useSettingsStore((s) => s.setNutritionixApiKey);
+  const setUsdaApiKey = useSettingsStore((s) => s.setUsdaApiKey);
 
   const reminderBreakfast = useSettingsStore((s) => s.reminderBreakfast);
   const reminderLunch = useSettingsStore((s) => s.reminderLunch);
@@ -183,11 +181,10 @@ export default function SettingsScreen() {
 
   // Local key state (shows current saved value)
   const [geminiKey, setGeminiKey] = useState(getGeminiApiKey());
-  const [nxAppId, setNxAppId] = useState(getNutritionixAppId());
-  const [nxApiKey, setNxApiKey] = useState(getNutritionixApiKey());
+  const [usdaKey, setUsdaKey] = useState(getUsdaApiKey());
 
   const [geminiTest, setGeminiTest] = useState<'idle' | 'testing' | 'ok' | 'fail'>('idle');
-  const [nxTest, setNxTest] = useState<'idle' | 'testing' | 'ok' | 'fail'>('idle');
+  const [usdaTest, setUsdaTest] = useState<'idle' | 'testing' | 'ok' | 'fail'>('idle');
 
   // Edit goals modal
   const [editGoalsModal, setEditGoalsModal] = useState(false);
@@ -242,26 +239,16 @@ export default function SettingsScreen() {
     } catch { setGeminiTest('fail'); }
   }
 
-  async function testNutritionix() {
-    setNxTest('testing');
-    const appId = getNutritionixAppId();
-    const apiKey = getNutritionixApiKey();
-    if (!appId || !apiKey) { setNxTest('fail'); return; }
+  async function testUsda() {
+    setUsdaTest('testing');
+    const key = getUsdaApiKey();
+    if (!key) { setUsdaTest('fail'); return; }
     try {
       const res = await fetch(
-        'https://trackapi.nutritionix.com/v2/natural/nutrients',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-app-id': appId,
-            'x-app-key': apiKey,
-          },
-          body: JSON.stringify({ query: 'apple' }),
-        }
+        `https://api.nal.usda.gov/fdc/v1/foods/search?query=apple&api_key=${key}&pageSize=1`
       );
-      setNxTest(res.ok ? 'ok' : 'fail');
-    } catch { setNxTest('fail'); }
+      setUsdaTest(res.ok ? 'ok' : 'fail');
+    } catch { setUsdaTest('fail'); }
   }
 
   async function handleSaveGoals() {
@@ -365,24 +352,14 @@ export default function SettingsScreen() {
               testStatus={geminiTest}
             />
           </Row>
-          <Row>
-            <ApiKeyRow
-              label="Nutritionix App ID"
-              value={nxAppId}
-              onChange={setNxAppId}
-              onSave={() => setNutritionixAppId(nxAppId)}
-              onTest={testNutritionix}
-              testStatus={nxTest}
-            />
-          </Row>
           <Row last>
             <ApiKeyRow
-              label="Nutritionix API Key"
-              value={nxApiKey}
-              onChange={setNxApiKey}
-              onSave={() => setNutritionixApiKey(nxApiKey)}
-              onTest={testNutritionix}
-              testStatus={nxTest}
+              label="USDA FoodData Central API Key"
+              value={usdaKey}
+              onChange={setUsdaKey}
+              onSave={() => setUsdaApiKey(usdaKey)}
+              onTest={testUsda}
+              testStatus={usdaTest}
             />
           </Row>
         </Section>

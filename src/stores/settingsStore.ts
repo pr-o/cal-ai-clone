@@ -1,7 +1,5 @@
-import { createMMKV } from 'react-native-mmkv';
 import { create } from 'zustand';
-
-const storage = createMMKV({ id: 'settings' });
+import { storage } from '@/utils/storage';
 
 type Theme = 'light' | 'dark' | 'system';
 type WeightUnit = 'kg' | 'lbs';
@@ -17,16 +15,14 @@ interface SettingsStore {
 
   // API keys (read from MMKV at call time — not stored in Zustand memory)
   getGeminiApiKey: () => string;
-  getNutritionixAppId: () => string;
-  getNutritionixApiKey: () => string;
+  getUsdaApiKey: () => string;
 
   // Setters
   setTheme: (theme: Theme) => void;
   setWeightUnit: (unit: WeightUnit) => void;
   setOnboardingComplete: (value: boolean) => void;
   setGeminiApiKey: (key: string) => void;
-  setNutritionixAppId: (id: string) => void;
-  setNutritionixApiKey: (key: string) => void;
+  setUsdaApiKey: (key: string) => void;
   setReminderBreakfast: (value: boolean) => void;
   setReminderLunch: (value: boolean) => void;
   setReminderDinner: (value: boolean) => void;
@@ -42,8 +38,7 @@ export const useSettingsStore = create<SettingsStore>(() => ({
   reminderDinner: storage.getBoolean('reminder_dinner') ?? false,
 
   getGeminiApiKey: () => storage.getString('gemini_api_key') ?? '',
-  getNutritionixAppId: () => storage.getString('nutritionix_app_id') ?? '',
-  getNutritionixApiKey: () => storage.getString('nutritionix_api_key') ?? '',
+  getUsdaApiKey: () => storage.getString('usda_api_key') ?? '',
 
   setTheme: (theme) => {
     storage.set('theme', theme);
@@ -61,8 +56,7 @@ export const useSettingsStore = create<SettingsStore>(() => ({
   },
 
   setGeminiApiKey: (key) => storage.set('gemini_api_key', key),
-  setNutritionixAppId: (id) => storage.set('nutritionix_app_id', id),
-  setNutritionixApiKey: (key) => storage.set('nutritionix_api_key', key),
+  setUsdaApiKey: (key) => storage.set('usda_api_key', key),
 
   setReminderBreakfast: (value) => {
     storage.set('reminder_breakfast', value);

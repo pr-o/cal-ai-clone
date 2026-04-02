@@ -1,6 +1,6 @@
 import { useSettingsStore } from '@/stores/settingsStore';
 
-export interface NutritionixFood {
+export interface FoodResult {
   name: string;
   calories: number;
   proteinG: number;
@@ -11,47 +11,41 @@ export interface NutritionixFood {
   photoUrl: string | null;
 }
 
-export class NutritionixError extends Error {
+export class FoodSearchError extends Error {
   constructor(
     message: string,
     public readonly code?: 'NO_API_KEY' | 'API_ERROR' | 'PARSE_ERROR'
   ) {
     super(message);
-    this.name = 'NutritionixError';
+    this.name = 'FoodSearchError';
   }
 }
 
-export async function searchFoods(
-  query: string
-): Promise<NutritionixFood[]> {
-  const state = useSettingsStore.getState();
-  const appId = state.getNutritionixAppId();
-  const apiKey = state.getNutritionixApiKey();
+function getNutrient(nutrients: any[], name: string): number {
+  const match = nutrients.find(
+    (n: any) => typeof n.nutrientName === 'string' && n.nutrientName.toLowerCase().includes(name.toLowerCase())
+  );
+  return match ? Math.round(Number(match.value) * 10) / 10 : 0;
+}
 
-  if (!appId || !apiKey) {
-    throw new NutritionixError(
-      'Nutritionix API keys not set. Go to Settings to add them.',
+export async function searchFoods(query: string): Promise<FoodResult[]> {
+  const apiKey = useSettingsStore.getState().getUsdaApiKey();
+
+  if (!apiKey) {
+    throw new FoodSearchError(
+      'USDA API key not set. Go to Settings to add it.',
       'NO_API_KEY'
     );
   }
 
-  const response = await fetch(
-    'https://trackapi.nutritionix.com/v2/natural/nutrients',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-app-id': appId,
-        'x-app-key': apiKey,
-      },
-      body: JSON.stringify({ query }),
-    }
-  );
+  const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(query)}&api_key=${apiKey}&pageSize=20&dataType=Survey%20%28FNDDS%29,SR%20Legacy,Foundation`;
+
+  const response = await fetch(url);
 
   if (!response.ok) {
     const text = await response.text();
-    throw new NutritionixError(
-      `Nutritionix API error ${response.status}: ${text}`,
+    throw new FoodSearchError(
+      `USDA API error ${response.status}: ${text}`,
       'API_ERROR'
     );
   }
@@ -60,18 +54,28 @@ export async function searchFoods(
   try {
     data = await response.json();
   } catch {
-    throw new NutritionixError('Failed to parse Nutritionix response', 'PARSE_ERROR');
+    throw new FoodSearchError('Failed to parse USDA response', 'PARSE_ERROR');
   }
 
   const foods: any[] = data?.foods ?? [];
-  return foods.map((f) => ({
-    name: String(f.food_name ?? 'Unknown'),
-    calories: Math.round(Number(f.nf_calories ?? 0)),
-    proteinG: Math.round(Number(f.nf_protein ?? 0) * 10) / 10,
-    carbsG: Math.round(Number(f.nf_total_carbohydrate ?? 0) * 10) / 10,
-    fatG: Math.round(Number(f.nf_total_fat ?? 0) * 10) / 10,
-    servingSize: Number(f.serving_qty ?? 1),
-    servingUnit: String(f.serving_unit ?? 'serving'),
-    photoUrl: f.photo?.thumb ?? null,
-  }));
+  return foods.map((f) => {
+    const nutrients: any[] = f.foodNutrients ?? [];
+    const calories = Math.round(getNutrient(nutrients, 'energy'));
+    const proteinG = getNutrient(nutrients, 'protein');
+    const carbsG = getNutrient(nutrients, 'carbohydrate');
+    const fatG = getNutrient(nutrients, 'total lipid');
+    const servingSize = f.servingSize ? Number(f.servingSize) : 100;
+    const servingUnit = f.servingSizeUnit ?? 'g';
+
+    return {
+      name: String(f.description ?? 'Unknown'),
+      calories,
+      proteinG,
+      carbsG,
+      fatG,
+      servingSize,
+      servingUnit,
+      photoUrl: null,
+    };
+  });
 }
