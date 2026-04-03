@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A React Native (Expo) clone of **Cal AI** — an AI-powered calorie tracking app. Users complete a multi-step onboarding, then log meals via AI photo scanning (Gemini 2.0 Flash), food text search (Nutritionix), exercise, and water. All data is stored locally on-device (no backend, no auth).
 
-Full design spec: `docs/superpowers/specs/2026-04-02-cal-ai-clone-design.md`  
+Full design spec: `docs/superpowers/specs/2026-04-02-cal-ai-rn-clone-design.md`  
 UI reference screenshots: `.claude/screenshots/README.md`
 
 ---

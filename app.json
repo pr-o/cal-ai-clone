@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Cal AI Clone",
-    "slug": "cal-ai-clone",
+    "name": "Cal AI RN Clone",
+    "slug": "cal-ai-rn-clone",
     "scheme": "calaiclone",
     "version": "1.0.0",
     "orientation": "portrait",
